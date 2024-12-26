@@ -22,7 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -55,7 +55,10 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LemonScreenApp() {
-    var currentScreen by rememberSaveable { mutableStateOf(1) }
+    var currentScreen by rememberSaveable { mutableIntStateOf(1) }
+
+    var squeezeCount by rememberSaveable { mutableIntStateOf(0) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -79,16 +82,24 @@ fun LemonScreenApp() {
                 1 -> {
                     LemonadeScreen(image = R.drawable.lemon_tree,
                         text = stringResource(R.string.text1),
-                        onClick = { currentScreen = 2 })
+                        onClick = { squeezeCount = (2..4).random()
+                            currentScreen = 2 }
+                    )
                 }
 
                 2 -> LemonadeScreen(image = R.drawable.lemon_squeeze,
                     text = stringResource(R.string.text2),
-                    onClick = { currentScreen = 3 })
+                    onClick = {
+                        squeezeCount--
+                        if(squeezeCount == 0)
+                        currentScreen = 3
+                    })
 
                 3 -> LemonadeScreen(image = R.drawable.lemon_drink,
                     text = stringResource(R.string.text3),
-                    onClick = { currentScreen = 4 })
+                    onClick = {
+                        currentScreen = 4
+                    })
 
                 4 -> LemonadeScreen(image = R.drawable.lemon_restart,
                     text = stringResource(R.string.text4),
